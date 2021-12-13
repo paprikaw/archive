@@ -181,6 +181,9 @@ In particular, middleware are intended to contain logic with side effects. In ad
 
 上面已经说过如何在createStore的时候加入中间件了，我们可以写自己的中间件
 
+## 使用useSelector来订阅更新
+useSelector automatically subscribes to the Redux store for us! That way, any time an action is dispatched, it will call its selector function again right away. If the value returned by the selector changes from the last time it ran, useSelector will force our component to re-render with the new data. All we have to do is call useSelector() once in our component, and it does the rest of the work for us.
+
 ## selector inside
 
 如果我们使用`useSelector()`, useSelector会在每次dispatch action之后重新跑一次看一下本次和上次的结果是不是一样的，如果结果不一样，就rerender这个component。这里有一个问题，如果在selector中使用了map之类的函数，每次返回的ref都是不一样的，所以每次action dispatch的时候使用这个selector的component都会更新。
