@@ -73,11 +73,44 @@ let mySquare = createSquare({ colour: "red", width: 100 });
 let mySquare = createSquare({ width: 100, opacity: 0.5 } as SquareConfig);
 ```
 ## var申明（过时）
-* 为什么使用let而不是var？
-* var的作用域是哪里
-    在包含var的函数，if，循环体外面都是可以访问到var的
-* var有哪些问题
 
+var可以被多次声明，并且没有屏蔽的功能，在不同块作用域中可以共同更改var的值：
+``` ts
+function sumMatrix(matrix: number[][]) {
+    var sum = 0;
+    for (var i = 0; i < matrix.length; i++) {
+        var currentRow = matrix[i];
+        for (var i = 0; i < currentRow.length; i++) {
+            sum += currentRow[i];
+        }
+    }
+
+    return sum;
+}
+```
+以上这个例子，var在外层循环中已经被申明了，但是里层的重复申明导致外层的var也被改变，从而导致错误。
+
+
+函数在申明的时候会保存其所在的变量环境（let var const），但是var在变量环境中是可以一直改变的，而let在变量环境中则不改变, 有点儿像react的class component中this的对象会随时变化, 而function component则不会改变。这就代表，var的行为在某种程度上是不可预测的。
+
+## 闭包
+
+利用变量声明时会创建环境这个特性，我们可以使用闭包来实现函数状态的留存。
+``` ts
+var a  = 10;
+function Add3(){
+    var a = 10;
+    return function(){
+        a++;
+        return a;
+    };
+};
+var cc =  Add3();
+console.log(cc());
+console.log(cc());
+console.log(cc());
+console.log(a);
+```
 ## 解构
 与javascript差不多，但是里面包含了类型的判断
 
@@ -92,9 +125,9 @@ function keepWholeObject(wholeObject: { a: string, b?: number }) {
 ```
 
 ## 思考（使用我的思维来编程时有什么预设条件？）
-
 * 变量自带屏蔽的功能：里层的块对于变量的申明会掩盖外层块的申明
-* 变量捕获之后，创建与变量有关的环境，作用域结束之后，这个环境依然是存在的
+* 变量捕获之后，创建与变量有关的环境，作用域结束之后，这个环境依然是存在的 (不一定)
+
 ``` ts
 function theCityThatAlwaysSleeps() {
     let getCity;
